@@ -177,7 +177,7 @@ const Button = styled.button`
     padding: 4px 8px;
   }
 `;
-const LoadingCon = styled.div`
+ export const LoadingCon = styled.div`
 width: 100%;
 display: flex;
 align-items: center;

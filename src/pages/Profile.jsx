@@ -86,7 +86,6 @@ position: relative;
 `;
 
 const Profile = () => {
-    const PF = process.env.REACT_APP_PUBLIC_FOLDER;
     const [user, setUser] = useState({});
     const username = useParams().username;
 

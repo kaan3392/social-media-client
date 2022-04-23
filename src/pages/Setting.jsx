@@ -19,6 +19,8 @@ import { uploadTaskPromise } from "../helpers";
 import { useNavigate } from "react-router-dom";
 import Hamburger from "../components/Hamburger";
 import { Done, Error } from "@mui/icons-material";
+import { LoadingCon } from "../components/Share";
+import { CircularProgress } from "@mui/material";
 
 const color = "#383e42";
 
@@ -130,11 +132,12 @@ export const ThrowMessage = styled.span`
 `;
 
 const Setting = () => {
-  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const [profPic, setProfPic] = useState({});
   const [covPic, setCovPic] = useState({});
   const [success, setSuccess] = useState(false);
-  const { user, darkMode, dispatch, isFetching, error } =useContext(AuthContext);
+  const [spin, setSpin] = useState(false);
+  const { user, darkMode, dispatch, isFetching, error } =
+    useContext(AuthContext);
   const [inputs, setInputs] = useState({});
   let navigate = useNavigate();
 
@@ -150,9 +153,11 @@ const Setting = () => {
     let profilPicURL;
     let coverPicURL;
     if (profPic.name) {
+      setSpin(true);
       profilPicURL = await uploadTaskPromise(profPic);
     }
     if (covPic.name) {
+      setSpin(true);
       coverPicURL = await uploadTaskPromise(covPic);
     }
     const userCredential = {
@@ -161,6 +166,7 @@ const Setting = () => {
       coverPicture: coverPicURL,
     };
     updateUser(userCredential, dispatch, user._id);
+    setSpin(false)
     if (!error) {
       setSuccess(true);
     }
@@ -178,8 +184,18 @@ const Setting = () => {
         <Right>
           <RightTop>
             <ProfileCover>
-              <CoverImage src={user?.coverPicture ||"https://images.pexels.com/photos/844297/pexels-photo-844297.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"} />
-              <PersonImage src={user?.profilePicture || "https://images.pexels.com/photos/1172207/pexels-photo-1172207.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"} />
+              <CoverImage
+                src={
+                  user?.coverPicture ||
+                  "https://images.pexels.com/photos/844297/pexels-photo-844297.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+                }
+              />
+              <PersonImage
+                src={
+                  user?.profilePicture ||
+                  "https://images.pexels.com/photos/1172207/pexels-photo-1172207.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+                }
+              />
             </ProfileCover>
             <ProfileInfo>
               <InfoName>{user.username}</InfoName>
@@ -273,15 +289,21 @@ const Setting = () => {
                       </Select>
                     </ItemCon>
                   </FormCon>
-                  <ButtonCon>
-                    <Button
-                      disabled={isFetching}
-                      type="submit"
-                      darkMode={darkMode}
-                    >
-                      Save
-                    </Button>
-                  </ButtonCon>
+                  {spin ? (
+                    <LoadingCon>
+                      <CircularProgress style={{ margin: 20, fontSize: 45 }} />
+                    </LoadingCon>
+                  ) : (
+                    <ButtonCon>
+                      <Button
+                        disabled={isFetching}
+                        type="submit"
+                        darkMode={darkMode}
+                      >
+                        Save
+                      </Button>
+                    </ButtonCon>
+                  )}
                 </Form>
               </Wrapper>
             </Inputs>
